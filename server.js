@@ -1,39 +1,64 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const todoRoutes = require('./routes/todoRoutes');
-const authRoutes = require('./routes/authRoutes');
-const chatRoutes = require('./routes/chatRoutes');
+require("dotenv").config();
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const todoRoutes = require("./routes/todoRoutes");
+const authRoutes = require("./routes/authRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
-const allowedOriginPattern = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):3000$/;
-
-const cors = require("cors");
-
+// Middleware
 app.use(
   cors({
-    origin: "https://todo-frontend-coral-chi.vercel.app/",
+    origin: "https://todo-frontend-coral-chi.vercel.app",
     credentials: true,
   })
 );
 
 app.use(express.json());
 
-app.use('/api/todos', todoRoutes);
-app.use('/api/users', authRoutes);
-app.use('/api/chat', chatRoutes);
+// Log incoming requests (optional, useful for debugging)
 app.use((req, res, next) => {
-    console.log('Incoming request from origin:', req.headers.origin, '| Path:', req.path);
-    next();
+  console.log(
+    `Incoming request: ${req.method} ${req.path} | Origin: ${req.headers.origin}`
+  );
+  next();
 });
+
+// Routes
+app.use("/api/todos", todoRoutes);
+app.use("/api/users", authRoutes);
+app.use("/api/chat", chatRoutes);
+
+// Health check route (optional but recommended)
+app.get("/", (req, res) => {
+  res.json({
+    message: "Todo Backend API is running 🚀",
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
 
 mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('MongoDB connected');
-        app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
-    })
-    .catch((err) => console.error('MongoDB connection error:', err));
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+  });
