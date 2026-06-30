@@ -1,5 +1,6 @@
 require("dotenv").config();
-
+console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
+console.log("JWT_SECRET value:", process.env.JWT_SECRET ? "Loaded" : "Missing");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -62,3 +63,4 @@ mongoose
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err);
   });
+console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
