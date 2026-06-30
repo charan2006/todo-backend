@@ -10,16 +10,14 @@ const app = express();
 
 const allowedOriginPattern = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):3000$/;
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOriginPattern.test(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "https://todo-frontend-coral-chi.vercel.app/",
     credentials: true,
-}));
+  })
+);
 
 app.use(express.json());
 
