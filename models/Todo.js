@@ -15,6 +15,11 @@ const todoSchema = new mongoose.Schema(
         description: String,
         status: { type: Boolean, default: false },
         deleted: { type: Boolean, default: false },
+        category: {
+            type: String,
+            enum: ['work', 'personal', 'urgent'],
+            default: 'personal',
+        },
         subtasks: [subtaskSchema],
     },
     { timestamps: true }
