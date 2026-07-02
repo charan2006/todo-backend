@@ -21,7 +21,14 @@ router.get('/trash', protect, async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
-
+router.delete('/trash/clear', protect, async (req, res) => {
+    try {
+        const result = await Todo.deleteMany({ user: req.user._id, deleted: true });
+        res.json({ message: 'Trash cleared', deletedCount: result.deletedCount });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 router.post('/', protect, async (req, res) => {
     try {
         const saved = await new Todo({ ...req.body, user: req.user._id }).save();
